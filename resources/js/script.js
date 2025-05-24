@@ -1,5 +1,16 @@
-// Mobile Menu Toggle
+// Initialize AOS
+AOS.init({
+    duration: 800,
+    once: true
+});
 document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+        const preloader = document.getElementById('preloader');
+        if (preloader) {
+            preloader.classList.add('hidden');
+        }
+    }, 500);
+
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const mobileMenu = document.getElementById('mobileMenu');
     
@@ -9,7 +20,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Close mobile menu when clicking on a link
     const mobileLinks = mobileMenu ? mobileMenu.querySelectorAll('a') : [];
     mobileLinks.forEach(link => {
         link.addEventListener('click', function() {
@@ -17,13 +27,33 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Add animation class to rocket
-    const rocketElement = document.querySelector('.rocket-animation');
-    if (rocketElement) {
-        rocketElement.classList.add('rocket-animation');
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+    
+    const scrollTopBtn = document.getElementById('scrollTopBtn');
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 300) {
+            scrollTopBtn.classList.add('visible');
+        } else {
+            scrollTopBtn.classList.remove('visible');
+        }
+    });
+    
+    if (scrollTopBtn) {
+        scrollTopBtn.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
     }
     
-    // Smooth scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             e.preventDefault();
@@ -34,14 +64,13 @@ document.addEventListener('DOMContentLoaded', function() {
             const targetElement = document.querySelector(targetId);
             if (targetElement) {
                 window.scrollTo({
-                    top: targetElement.offsetTop - 80, // Adjust for header height
+                    top: targetElement.offsetTop - 80,
                     behavior: 'smooth'
                 });
             }
         });
     });
     
-    // Form validation
     const contactForm = document.querySelector('form');
     if (contactForm) {
         contactForm.addEventListener('submit', function(e) {
@@ -53,7 +82,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             let isValid = true;
             
-            // Simple validation
             if (!nameInput.value.trim()) {
                 isValid = false;
                 showError(nameInput, 'Nama tidak boleh kosong');
@@ -79,14 +107,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             if (isValid) {
-                // Here you would typically send the form data to a server
                 alert('Pesan berhasil dikirim! Terima kasih telah menghubungi kami.');
                 contactForm.reset();
             }
         });
     }
     
-    // Helper functions for form validation
     function showError(input, message) {
         const formGroup = input.parentElement;
         let errorElement = formGroup.querySelector('.error-message');
@@ -116,61 +142,4 @@ document.addEventListener('DOMContentLoaded', function() {
         const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(String(email).toLowerCase());
     }
-    
-    // Add animation to elements when they come into view
-    const animateOnScroll = function() {
-        const elements = document.querySelectorAll('.animate-on-scroll');
-        
-        elements.forEach(element => {
-            const elementPosition = element.getBoundingClientRect().top;
-            const windowHeight = window.innerHeight;
-            
-            if (elementPosition < windowHeight - 100) {
-                element.classList.add('animated');
-            }
-        });
-    };
-    
-    // Run animation check on scroll
-    window.addEventListener('scroll', animateOnScroll);
-    
-    // Run once on page load
-    animateOnScroll();
-    
-    // Add parallax effect to hero section
-    const heroSection = document.querySelector('.hero-parallax');
-    if (heroSection) {
-        window.addEventListener('scroll', function() {
-            const scrollPosition = window.scrollY;
-            heroSection.style.backgroundPositionY = scrollPosition * 0.5 + 'px';
-        });
-    }
-    
-    // Countdown timer for upcoming events (if needed)
-    function startCountdown(targetDate, elementId) {
-        const countdownElement = document.getElementById(elementId);
-        if (!countdownElement) return;
-        
-        const interval = setInterval(function() {
-            const now = new Date().getTime();
-            const distance = targetDate - now;
-            
-            if (distance < 0) {
-                clearInterval(interval);
-                countdownElement.innerHTML = "Acara telah dimulai!";
-                return;
-            }
-            
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-            
-            countdownElement.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-        }, 1000);
-    }
-    
-    // Example usage of countdown timer
-    // const eventDate = new Date("Dec 31, 2025 23:59:59").getTime();
-    // startCountdown(eventDate, "countdown-timer");
 });
